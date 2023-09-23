@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Modpack Data</title>
+    <!-- Include JSON Editor CSS and JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.1.8/jsoneditor.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.1.8/jsoneditor.min.js"></script>
+</head>
+<body>
+    <h1>Upload Modpack Data</h1>
+    <form id="uploadForm">
+        <label for="jsonEditor">Modpack Data (JSON):</label><br>
+        <div id="jsonEditor" style="height: 400px;"></div><br><br>
+
+        <label for="client">Upload Client:</label>
+        <input type="file" id="client" name="client" accept=".zip" required><br><br>
+
+        <label for="server">Upload Server:</label>
+        <input type="file" id="server" name="server" accept=".zip" required><br><br>
+
+        <input type="submit" value="Upload">
+    </form>
+
+    <button id="loadDataButton">Load Default Data</button>
+    <button id="loadFileButton">Load Data from File</button>
+
+    <script>
+        // Create a JSON Editor
+        const container = document.getElementById("jsonEditor");
+        const options = {
+            mode: "code",
+            onChange: function() {
+                // Update the hidden input field with JSON data
+                const json = editor.get();
+                document.getElementById("jsonData").value = JSON.stringify(json);
+            }
+        };
+        const editor = new JSONEditor(container, options);
+
+        // Create a hidden input field for JSON data
+        const jsonDataInput = document.createElement("input");
+        jsonDataInput.setAttribute("type", "hidden");
+        jsonDataInput.setAttribute("id", "jsonData");
+        jsonDataInput.setAttribute("name", "jsonData");
+        document.getElementById("uploadForm").appendChild(jsonDataInput);
+
+        // Load default JSON data on button click
+        document.getElementById("loadDataButton").addEventListener("click", function () {
+            const defaultData = {
+                "name": "Moon 2",
+                "desc": "Add .carousel-fade to your carousel to animate slides with a fade transition instead of a slide...",
+                "client": "Moon.zip",
+                "server": "Server.zip",
+                "image": "main.png",
+                "version": "1.18.2",
+                "carousel": {
+                    "image1": "/images/1.png",
+                    "image2": "/images/2.png"
+                }
+            };
+            editor.set(defaultData);
+        });
+
+        // Load JSON data from a file on button click
+        document.getElementById("loadFileButton").addEventListener("click", function () {
+            // Assuming you have an input element for file selection with id="fileInput"
+            const fileInput = document.getElementById("fileInput");
+
+            // Trigger the file input element to open the file dialog
+            fileInput.click();
+
+            // Listen for changes in the selected file
+            fileInput.addEventListener("change", function () {
+                const selectedFile = fileInput.files[0];
+                if (selectedFile) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        try {
+                            const jsonData = JSON.parse(e.target.result);
+                            editor.set(jsonData);
+                        } catch (error) {
+                            console.error("Error parsing JSON:", error);
+                            alert("Error parsing JSON data from the file.");
+                        }
+                    };
+                    reader.readAsText(selectedFile);
+                }
+            });
+        });
+
+        // Listen for form submission
+        document.getElementById("uploadForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            // Handle the form data as needed, including client and server file uploads
+            // You can access the JSON data using: document.getElementById("jsonData").value
+            const formData = new FormData(this);
+
+            // Send the form data to your server using fetch or another method
+            // Example:
+            fetch("/upload", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Data uploaded successfully!");
+                    // Redirect or perform other actions as needed
+                } else {
+                    alert("Error uploading data.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Error uploading data.");
+            });
+        });
+    </script>
+</body>
+</html>

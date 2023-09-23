@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mihalic2040 Modpacks</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container container">
+            <input type="checkbox" name="" id="">
+            <div class="hamburger-lines">
+                <span class="line line1"></span>
+                <span class="line line2"></span>
+                <span class="line line3"></span>
+            </div>
+            <ul class="menu-items">
+                <li><a href="/">Home</a></li>
+                <li><a href="/modpacks">Modpacks</a></li>
+                <li><a href="https://discord.gg/QN3T8EqQud">Discord</a></li>
+            </ul>
+            <h1 class="logo">Mihalic2040</h1>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Modpacks</h1>
+        <div class="row">
+            {% for modpack in modpacks %}
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                <a href="modpacks/{{ modpack.name }}" style="text-decoration: none; color: black;">
+                    <div class="card">
+                        <img src="modpacks/static/{{ modpack.filepath }}/{{ modpack.image }}" class="card-img-top" alt="{{ modpack.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ modpack.name }}</h5>
+                            <p class="card-text">{{ modpack.desc }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>
